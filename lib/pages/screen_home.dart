@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lista_compra/database/app_database.dart';
-import 'package:lista_compra/page/screen_list_itens.dart';
+import 'package:lista_compra/pages/screen_list_itens.dart';
+import 'package:lista_compra/viewmodel/listas_view_model.dart';
+import 'package:provider/provider.dart';
 
 //--------------------------------------------------------------//
 // Tela principal: responsável por mostrar as listas de compras //
@@ -45,10 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                _salvaListaEditada(
+                context.read<ListasViewModel>().editarLista(
                   idDaLista,
                   getNovoNomeDaListaController.text,
                 );
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -107,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                _excluiLista(ValueKey(idDaLista));
+                context.read<ListasViewModel>().deletarLista(idDaLista);
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
@@ -127,65 +130,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //--------------------------------------------------------------//
-  // Função que salva a edição da lista no banco de dados
-  //--------------------------------------------------------------//
-  void _salvaListaEditada(int idDalista, String novoNomeDalista) async {
-    bool listaFoiEditada = await AppDatabase.instance.editaLista(
-      idDalista,
-      novoNomeDalista,
-    );
-    if (listaFoiEditada) {
-      setState(() {
-        listasDeCompras.removeWhere((card) => card.key == ValueKey(idDalista));
-        listasDeCompras.add(criaCardDeLista(idDalista, novoNomeDalista));
-        Navigator.pop(context);
-      });
-    }
-  }
-
-  //--------------------------------------------------------------//
   // Função que cria uma nova lista
   //--------------------------------------------------------------//
   void _criaNovaLista() async {
-    int idDaNovaLista = await AppDatabase.instance.salvarLista(
-      _getNomeDaNovaListaController.text,
-    );
-    if (idDaNovaLista > 0) {
-      setState(() {
-        listasDeCompras.add(
-          criaCardDeLista(idDaNovaLista, _getNomeDaNovaListaController.text),
-        );
-        _getNomeDaNovaListaController
-            .clear(); // limpa o campo após clicar no botão
-      });
-    }
-  }
-
-  //--------------------------------------------------------------//
-  // Função que exclui uma lista
-  //--------------------------------------------------------------//
-  void _excluiLista(ValueKey<int> keyDaLista) async {
-    bool listaFoiDeletada = await AppDatabase.instance.deletarLista(
-      keyDaLista.value,
-    );
-    if (listaFoiDeletada) {
-      setState(() {
-        listasDeCompras.removeWhere((card) => card.key == keyDaLista);
-      });
-    }
-  }
-
-  //--------------------------------------------------------------//
-  // Função que busca as listas salvas no banco de dados          //
-  // e as adiciona à lista de compras as quais apareceram na tela //
-  //--------------------------------------------------------------//
-  void _buscaListas() async {
-    final listas = await AppDatabase.instance.buscarListas();
-    for (var lista in listas) {
-      Card cardLista = criaCardDeLista(lista['id'], lista['nome']);
-      setState(() {
-        listasDeCompras.add(cardLista);
-      });
+    final nome = _getNomeDaNovaListaController.text;
+    if (nome.isNotEmpty) {
+      context.read<ListasViewModel>().salvarLista(nome);
+      _getNomeDaNovaListaController.clear();
     }
   }
 
@@ -228,19 +179,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //--------------------------------------------------------------//
-  // Função que inicializa a tela e busca as listas
-  //--------------------------------------------------------------//
-  @override
-  void initState() {
-    super.initState();
-    _buscaListas();
-  }
-
-  //--------------------------------------------------------------//
   // Função que monta a tela
   //--------------------------------------------------------------//
   @override
   Widget build(BuildContext context) {
+    final ListasViewModel viewModel = context.watch<ListasViewModel>();
     return Scaffold(
       resizeToAvoidBottomInset: true, // para que o teclado não cubra o conteúdo
       appBar: AppBar(title: Center(child: Text('Lista de Compras'))),
@@ -260,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     controller: _getNomeDaNovaListaController,
                     onSubmitted: (valorDoCampo) {
-                      _criaNovaLista(); // ao pressionar enter no campo de texto, cria uma nova lista
+                      _criaNovaLista();
                     },
                   ),
                 ),
@@ -268,7 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: 10),
 
                 ElevatedButton(
-                  onPressed: _criaNovaLista,
+                  onPressed: () {
+                    _criaNovaLista();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -284,14 +229,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
             Divider(height: 50), // para separar visualmente o input e o botão
 
-            if (listasDeCompras.isEmpty)
+            if (viewModel.listasCarregadas.isEmpty)
               Text('Nenhuma lista cadastrada.', style: TextStyle(fontSize: 20))
             else
               Expanded(
                 child: ListView.builder(
-                  itemCount: listasDeCompras.length,
+                  itemCount: viewModel.listasCarregadas.length,
                   itemBuilder: (context, index) {
-                    return listasDeCompras[index];
+                    final lista = viewModel.listasCarregadas[index];
+                    return criaCardDeLista(lista.id, lista.nome);
                   },
                 ),
               ),

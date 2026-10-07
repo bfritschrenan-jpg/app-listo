@@ -23,18 +23,18 @@ class AppDatabase {
 
     if (kIsWeb) {
       databaseFactory = databaseFactoryFfiWeb;
-      caminhoDoBanco = 'lista_compras.db';
+      caminhoDoBanco = 'listas.db';
     } else {
       final pastaDosBancos = await getDatabasesPath();
 
-      caminhoDoBanco = join(pastaDosBancos, 'listas_compras.db');
+      caminhoDoBanco = join(pastaDosBancos, 'listas.db');
     }
 
     return openDatabase(caminhoDoBanco, version: 1, onCreate: _criarTabelas);
   }
 
   Future<void> _criarTabelas(Database db, int version) async {
-    await db.execute('''CREATE TABLE listas_compras (
+    await db.execute('''CREATE TABLE listas (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           nome TEXT
       )
@@ -43,8 +43,8 @@ class AppDatabase {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           nome TEXT,
           lista_id INTEGER,
-          comprado BOOLEAN DEFAULT 0,
-          FOREIGN KEY (lista_id) REFERENCES listas_compras (id) ON DELETE CASCADE
+          marcado BOOLEAN DEFAULT 0,
+          FOREIGN KEY (lista_id) REFERENCES listas (id) ON DELETE CASCADE
       )
     ''');
   }
@@ -58,13 +58,13 @@ class AppDatabase {
 
     final lista = {'nome': nome};
 
-    return await db.insert('listas_compras', lista);
+    return await db.insert('listas', lista);
   }
 
   Future<bool> deletarLista(int id) async {
     final db = await database;
     final int linhasExcluidas = await db.delete(
-      'listas_compras',
+      'listas',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -78,7 +78,7 @@ class AppDatabase {
     final db = await database;
 
     final int linhasAfetadas = await db.update(
-      'listas_compras',
+      'listas',
       {'nome': nome},
       where: 'id = ?',
       whereArgs: [id],
@@ -93,7 +93,7 @@ class AppDatabase {
   Future<List<Map<String, dynamic>>> buscarListas() async {
     final db = await database;
     print('estou buscando as listas no banco');
-    List<Map<String, dynamic>> listas = await db.query('listas_compras');
+    List<Map<String, dynamic>> listas = await db.query('listas');
     print('listas encontradas no banco: $listas');
     return listas;
   }
@@ -102,7 +102,7 @@ class AppDatabase {
     final db = await database;
 
     final lista = await db.query(
-      'listas_compras',
+      'listas',
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,
@@ -167,7 +167,7 @@ class AppDatabase {
     }
     final int linhasAfetadas = await db.update(
       'itens_da_lista',
-      {'nome': novoNomeDoItem, 'comprado': compradoSqlite},
+      {'nome': novoNomeDoItem, 'marcado': compradoSqlite},
       where: 'id = ? AND lista_id = ?',
       whereArgs: [idDoItem, idDaLista],
     );

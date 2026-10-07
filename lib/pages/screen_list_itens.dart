@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lista_compra/database/app_database.dart';
-import 'package:lista_compra/card_item.dart';
+import 'package:lista_compra/widgets/card_item.dart';
 
 class ScreenListItens extends StatefulWidget {
   final int idDaLista;

@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:lista_compra/page/screen_home.dart';
+import 'package:lista_compra/pages/screen_home.dart';
+import 'package:provider/provider.dart';
+import 'package:lista_compra/viewmodel/listas_view_model.dart';
 
 void main() {
-  runApp(const MeuAplicativo());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) {
+        final viewModel = ListasViewModel();
+        viewModel.carregarListas();
+        return viewModel;
+      },
+      child: const MeuAplicativo(),
+    ),
+  );
 }
 
 class MeuAplicativo extends StatelessWidget {
@@ -11,7 +22,7 @@ class MeuAplicativo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'APP de Lista de Compras',
+      title: 'LISTO',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.green, // sua cor principal
