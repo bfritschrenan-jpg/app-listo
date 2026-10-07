@@ -25,14 +25,14 @@ class MeuAplicativo extends StatelessWidget {
       title: 'LISTO',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green, // sua cor principal
+          seedColor: Color(0xFF0DA4A1), // sua cor principal
           brightness: Brightness.light,
         ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
+          seedColor: Color(0xFF0DA4A1),
           brightness: Brightness.dark,
         ),
         useMaterial3: true,

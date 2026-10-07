@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final ListasViewModel viewModel = context.watch<ListasViewModel>();
     return Scaffold(
       resizeToAvoidBottomInset: true, // para que o teclado não cubra o conteúdo
-      appBar: AppBar(title: Center(child: Text('Lista de Compras'))),
+      appBar: AppBar(title: Center(child: Text('LISTO'))),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
