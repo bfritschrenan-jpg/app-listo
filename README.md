@@ -1,31 +1,37 @@
-# Minha Lista
+# LISTO
 
-Aplicativo de lista de compras desenvolvido com Flutter.
+Aplicativo de listas desenvolvido com Flutter, criado para ser simples, rápido e direto ao ponto.
 
-O objetivo do projeto é facilitar a organização de compras, permitindo criar listas e adicionar itens de forma simples e prática.
+O LISTO permite criar várias listas e adicionar itens dentro de cada uma delas. Os itens podem ser marcados como concluídos quando necessário.
+
+A proposta do aplicativo é oferecer uma experiência simples, sem configurações complexas ou recursos desnecessários.
+
+Uma lista de compras, tarefas, filmes, livros, ferramentas ou qualquer outra coisa. **Você decide como usar.**
 
 ## Funcionalidades
 
-- Criação de listas de compras
-- Adição e visualização de itens em cada lista
-- Organização de itens por lista
-- Marcação de itens como comprados, retirados ou concluídos
-- Desmarcação de itens quando necessário
-- Armazenamento local de dados
-- Interface compatível com Android, iOS e Web
+* Criação de múltiplas listas
+* Adição de vários itens em cada lista
+* Visualização e organização dos itens por lista
+* Marcação de itens como concluídos
+* Desmarcação de itens quando necessário
+* Armazenamento local dos dados
+* Interface compatível com Android, iOS e Web
 
 ## Tecnologias utilizadas
 
-- Flutter
-- Dart
-- SQLite
-- Sqflite
+* Flutter
+* Dart
+* SQLite
+* Sqflite
 
 ## Observação sobre a versão Web
 
-A versão web está disponível para demonstração e testes da interface.
+A versão Web está disponível para demonstração e testes da interface.
 
-No navegador, o banco de dados é recriado sempre que o aplicativo é iniciado novamente. Por esse motivo, as listas e os itens cadastrados não são mantidos entre diferentes execuções do app.
+Atualmente, o armazenamento utilizado no projeto é baseado em SQLite, que funciona localmente no Android e iOS.
+
+No navegador, o banco de dados é recriado sempre que o aplicativo é iniciado novamente. Por esse motivo, as listas e os itens cadastrados não são mantidos entre diferentes execuções do aplicativo.
 
 Durante a mesma execução, incluindo o uso de hot reload, os dados permanecem disponíveis.
 
@@ -46,7 +52,7 @@ flutter doctor
 Clone este repositório:
 
 ```bash
-git clone [https://github.com/bfritschrenan-jpg/app-minha-lista.git](https://github.com/bfritschrenan-jpg/app-minha-lista.git)
+git clone https://github.com/bfritschrenan-jpg/app-minha-lista.git
 ```
 
 Entre na pasta do projeto:
@@ -69,7 +75,7 @@ flutter run
 
 ## Executar no navegador
 
-Para testar a versão web no Google Chrome:
+Para testar a versão Web no Google Chrome:
 
 ```bash
 flutter run -d chrome
@@ -79,12 +85,11 @@ flutter run -d chrome
 
 ```text
 lib/
-├── assets/         # Recursos visuais do aplicativo
-├── database/       # Banco de dados e persistência local
-├── page/           # Telas do aplicativo
-├── card_item.dart  # Componente visual de cada item da lista, incluindo
-│                   # nome do item e controle para marcar como concluído
-└── main.dart       # Ponto de entrada do app
+├── assets/          # Recursos visuais do aplicativo
+├── database/        # Banco de dados e persistência local
+├── page/            # Telas do aplicativo
+├── card_item.dart   # Componente visual dos itens da lista
+└── main.dart        # Ponto de entrada do aplicativo
 ```
 
 ## Autor
